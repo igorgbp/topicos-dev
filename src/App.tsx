@@ -1,39 +1,49 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
-import React from "react";
-import ReactDOM from "react-dom";
-import QRCode from "react-qr-code";
+import QRCode from 'react-qr-code'
+import QRCodeLink from 'qrcode'
+
 
 function App() {
-  const [count, setCount] = useState(0)
-  // ReactDOM.render(<QRCode value="hey" />, document.getElementById("Container"));
+  const [value, setValue] = useState('')
+  const [qrCodeUrl, setQrCodeUrl] = useState('')
 
+  function generate(Link) {
+    QRCodeLink.toDataURL(Link, {
+      width:500,
+      margin: 3
+    }, (err,uri) => {
+      setQrCodeUrl(uri)
+    })
+  }
+
+function handleQrCode(e) {
+  setValue(e.target.value)
+  generate(e.target.value)
+}
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <QRCode value="0sssadasdad" />
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='container'>
+      <div className='card'>
+          <strong className='title'>QRCODE GENERATOR</strong>
+          <span className='subtitle'>Insira algo para gerar o qrcode</span>
+          
+          <input 
+          type="text" 
+          value={value}
+          className="input"
+          placeholder='Insira aqui o seu texto...'
+          onChange={(e) => handleQrCode(e)}/>
+
+          <div className='qr-code'>
+                <QRCode value={value} size={96} elevation={2}/>
+          </div>
+
+          <a href={qrCodeUrl} download="qrcode.png" className='btn-download'>Download</a>
+          
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
+      
   )
 }
 
